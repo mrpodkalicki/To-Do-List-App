@@ -7,21 +7,23 @@ class List{
 
     };
 
-    static createTask(content,number,date){
+    static createTask(content,date,ifDone){
         const task = {
-            number: number,
+            number: 0,
             content: content,
-            date:date
+            date:date,
+            completed:ifDone
         };
         return task
     }
-   
     addTask(content){
-        const number = this.container.length + 1;
+        const list = this.container;
         const dateOfCreated=date();
-
-        const task = List.createTask(content, number, dateOfCreated);
-        this.container.push(task);  
+        const ifDone="no done"
+        const task = List.createTask(content, dateOfCreated,ifDone);
+        this.container.push(task);
+        let newIndex = 1; 
+        list.map(x => { x.number = newIndex, newIndex++ }) 
     };
     deleteTask(index){
         delete this.container[index-1]
@@ -31,19 +33,25 @@ class List{
     };
     dateModifying(index,newDate){
         const list = this.container;
-        console.log(typeof (newDate))
-        console.log(list[index].date)
         list[index].date = newDate;
     };
+    markTask(index){
+        const list = this.container;
+        list[index - 1].completed = list[index - 1].completed=="done"?"no done":"done"
+
+    }
     showName(){
         console.log(`${this.name}:${this.date}`)   
     };
     showList(){
-        this.container.forEach(x=>console.log(x.number,x.content,x.date))
+        this.container.forEach(x => console.log(x.number, x.content, x.date, x.completed))
+        return this.container;
     };
-    taskDone(index){
-
+    elementsList(){
+        return this.container;
     }
+    
+
 }
 
 const date = () => {
@@ -72,8 +80,10 @@ const main=()=>{
     const dateOfCreatedList = date();
     const listOne = new List(ListName, dateOfCreatedList);
     listOne.showName()
+    
     while(run==true){
-        const action = parseInt(prompt("Please choose action.1-add task  2-delete task 3-modifying of task date  4-mark done task 0-exit"),10);
+        const action = parseInt(prompt("Please choose action.1-add a task  2-delete  a task 3-modifying of task date  4-mark as completed or unrealized a task 0-exit"),10);
+        let list = listOne.elementsList();
         switch(action){
             case 1: 
                 const contentTask = prompt("Give a task");
@@ -82,20 +92,39 @@ const main=()=>{
                 listOne.showList();
                 break;
             case 2:
-                const taskIndex=parseInt(prompt("Choose number task"));
-                listOne.deleteTask(taskIndex);
-                listOne.showName()
-                listOne.showList();
+                const taskIndex=parseInt(prompt("Choose number a task"));
+                 list = listOne.elementsList();
+                if (taskIndex <= list.length && taskIndex!=0){
+                    listOne.deleteTask(taskIndex);
+                    listOne.showName();
+                    listOne.showList();
+                }else{
+                    window.alert("the task with this number doesn't exist");  
+                }
                 break;
+                
             case 3:
-                const taskIndexMod = parseInt(prompt("Choose number task"));
-                const newDate=prompt("Give newDate");
-                listOne.dateModifying(taskIndexMod,newDate)
-                listOne.showName()
-                listOne.showList();
+                const taskIndexMod = parseInt(prompt("Choose number a  task"));
+                 list = listOne.elementsList();
+                if (taskIndexMod <= list.length && taskIndexMod != 0) {
+                    const newDate=prompt("Give newDate");
+                    listOne.dateModifying(taskIndexMod,newDate)
+                    listOne.showName()
+                    listOne.showList();
+                }else {
+                    window.alert("the task with this number doesn't exist");
+                };
                 break;
             case 4:
-                const taskIndexMod = parseInt(prompt("Choose number task"));
+                const taskIndexdone = parseInt(prompt("Choose number a task"));
+                 list = listOne.elementsList();
+                if (taskIndexdone <= list.length && taskIndexdone != 0){
+                    listOne.markTask(taskIndexdone);
+                    listOne.showName();
+                    listOne.showList();
+                }else {
+                    window.alert("the task with this number doesn't exist");
+                };
                 break
             case 0:
                 run=false;
