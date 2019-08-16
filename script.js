@@ -4,9 +4,7 @@ class List{
         this.name=name;
         this.date=date;
         this.container=[];
-
     };
-
     static createTask(content,date,ifDone){
         const task = {
             number: 0,
@@ -26,19 +24,22 @@ class List{
         list.map(x => { x.number = newIndex, newIndex++ }) 
     };
     deleteTask(index){
-        delete this.container[index-1]
         const list=this.container;
         let newIndex=1;
-        list.map(x => { x.number = newIndex, newIndex++})
+        const newContainer=[];
+        for(let x in list){if (x!= index-1) {newContainer.push(list[x])}};
+        newContainer.map(x => { x.number = newIndex, newIndex++ });
+        this.container=newContainer;     
     };
-    dateModifying(index,newDate){
+    modifyingTask(index, newOfTaskConten){
         const list = this.container;
-        list[index].date = newDate;
+        const dateOfModifying = date();
+        list[index - 1].content = newOfTaskConten;
+        list[index - 1].date = dateOfModifying;
     };
     markTask(index){
         const list = this.container;
         list[index - 1].completed = list[index - 1].completed=="done"?"no done":"done"
-
     }
     showName(){
         console.log(`${this.name}:${this.date}`)   
@@ -47,11 +48,10 @@ class List{
         this.container.forEach(x => console.log(x.number, x.content, x.date, x.completed))
         return this.container;
     };
-    elementsList(){
-        return this.container;
+    elementsListCount(){
+        const list = this.container;
+        return list.length
     }
-    
-
 }
 
 const date = () => {
@@ -71,7 +71,6 @@ const date = () => {
     return ListCreatedDate
 
 }
-
 const main=()=>{
     window.alert("Hi, it's to do apps. Press ok to continue.");
     let run=true;
@@ -80,10 +79,9 @@ const main=()=>{
     const dateOfCreatedList = date();
     const listOne = new List(ListName, dateOfCreatedList);
     listOne.showName()
-    
     while(run==true){
-        const action = parseInt(prompt("Please choose action.1-add a task  2-delete  a task 3-modifying of task date  4-mark as completed or unrealized a task 0-exit"),10);
-        let list = listOne.elementsList();
+        let listElementsCountt=listOne.elementsListCount();
+        const action = parseInt(prompt("Please choose action.1-add a task  2-delete  a task 3-modifying of task content 4-mark as completed or unrealized a task 0-exit"),10);
         switch(action){
             case 1: 
                 const contentTask = prompt("Give a task");
@@ -93,8 +91,7 @@ const main=()=>{
                 break;
             case 2:
                 const taskIndex=parseInt(prompt("Choose number a task"));
-                 list = listOne.elementsList();
-                if (taskIndex <= list.length && taskIndex!=0){
+                if (taskIndex <= listElementsCountt && taskIndex!=0){
                     listOne.deleteTask(taskIndex);
                     listOne.showName();
                     listOne.showList();
@@ -102,13 +99,11 @@ const main=()=>{
                     window.alert("the task with this number doesn't exist");  
                 }
                 break;
-                
             case 3:
                 const taskIndexMod = parseInt(prompt("Choose number a  task"));
-                 list = listOne.elementsList();
-                if (taskIndexMod <= list.length && taskIndexMod != 0) {
-                    const newDate=prompt("Give newDate");
-                    listOne.dateModifying(taskIndexMod,newDate)
+                if (taskIndexMod <= listElementsCountt && taskIndexMod != 0) {
+                    const newDate=prompt("Give new of content task");
+                    listOne.modifyingTask(taskIndexMod,newDate)
                     listOne.showName()
                     listOne.showList();
                 }else {
@@ -117,8 +112,8 @@ const main=()=>{
                 break;
             case 4:
                 const taskIndexdone = parseInt(prompt("Choose number a task"));
-                 list = listOne.elementsList();
-                if (taskIndexdone <= list.length && taskIndexdone != 0){
+               
+                if (taskIndexdone <= listElementsCountt && taskIndexdone != 0){
                     listOne.markTask(taskIndexdone);
                     listOne.showName();
                     listOne.showList();
@@ -128,9 +123,7 @@ const main=()=>{
                 break
             case 0:
                 run=false;
-                break;
-
-                
+                break;    
         }
         
     }
