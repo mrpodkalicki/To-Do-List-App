@@ -42,15 +42,25 @@ class List{
         list[index - 1].completed = list[index - 1].completed=="done"?"no done":"done"
     }
     showName(){
-        console.log(`${this.name}:${this.date}`)   
+        console.log(`${this.name}:${this.date}`) ;  
+        return `${this.name}:${this.date}`;
     };
     showList(){
         this.container.forEach(x => console.log(x.number, x.content, x.date, x.completed))
         return this.container;
     };
+    setToLocalStorage(date){
+        localStorage.setItem(this.name,date);
+       
+        
+    };
+    getDate(){
+        const saveDate = localStorage.getItem(this.name);
+        return saveDate;
+    };
     elementsListCount(){
         const list = this.container;
-        return list.length
+        return list
     }
 }
 
@@ -71,6 +81,13 @@ const date = () => {
     return ListCreatedDate
 
 }
+
+
+const splitDate(date)=()=>{
+    
+}
+
+
 const main=()=>{
     window.alert("Hi, it's to do apps. Press ok to continue.");
     let run=true;
@@ -80,8 +97,9 @@ const main=()=>{
     const listOne = new List(ListName, dateOfCreatedList);
     listOne.showName()
     while(run==true){
-        let listElementsCountt=listOne.elementsListCount();
-        const action = parseInt(prompt("Please choose action.1-add a task  2-delete  a task 3-modifying of task content 4-mark as completed or unrealized a task 0-exit"),10);
+        let listElements=listOne.elementsListCount();
+        let listElementsCountt = listElements.length;
+        const action = parseInt(prompt("Please choose action.1-add a task  2-delete  a task 3-modifying of task content 4-mark as completed or unrealized a task 5-save tasks to local storage 6-read task from local storge 0-exit"),10);
         switch(action){
             case 1: 
                 const contentTask = prompt("Give a task");
@@ -120,7 +138,19 @@ const main=()=>{
                 }else {
                     window.alert("the task with this number doesn't exist");
                 };
-                break
+                break;
+            case 5:
+                const list=listOne.elementsListCount();
+                const newList=list.map(x=>{return `${x.number},${x.content},${x.date},${x.completed};`});
+                const stringTask=newList.join();
+                listOne.setToLocalStorage(stringTask);
+                break;
+            case 6:
+                const saveList=listOne.getDate()
+                console.log(saveList
+                    )
+                const oldList=saveList.split(';')
+                console.log(oldList[0])
             case 0:
                 run=false;
                 break;    
