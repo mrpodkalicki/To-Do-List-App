@@ -50,20 +50,26 @@ class List{
         return this.container;
     };
     setToLocalStorage(date){
-        localStorage.setItem(this.name,date);
-       
-        
+        localStorage.setItem('List',date);
     };
     getDate(){
-        const saveDate = localStorage.getItem(this.name);
-        return saveDate;
+        this.container=[];
+        const list = this.container;
+        
+        const saveDate = localStorage.getItem('List').split(';');
+        for (let strtask of saveDate){
+            const date=strtask.split(',');
+            const task=List.createTask(date[1],date[2],date[3]);
+            this.container.push(task);   
+        }
+        let newIndex = 1; 
+        list.map(x => { x.number = newIndex, newIndex++ }); 
     };
     elementsListCount(){
         const list = this.container;
         return list
     }
 }
-
 const date = () => {
     var date = new Date();
     let day = date.getDate();
@@ -77,17 +83,10 @@ const date = () => {
     hour = hour <= 10 ? '0' + hour : hour;
     minute = minute <= 10 ? '0' + minute : minute;
     second = second <= 10 ? '0' + second : second;
-    const ListCreatedDate = `{(${hour}:${minute}:${second})-${day}.${month}.${year}}`;
+    const ListCreatedDate = `(${hour}:${minute}:${second})-${day}.${month}.${year}`;
     return ListCreatedDate
 
 }
-
-
-const splitDate(date)=()=>{
-    
-}
-
-
 const main=()=>{
     window.alert("Hi, it's to do apps. Press ok to continue.");
     let run=true;
@@ -141,16 +140,16 @@ const main=()=>{
                 break;
             case 5:
                 const list=listOne.elementsListCount();
-                const newList=list.map(x=>{return `${x.number},${x.content},${x.date},${x.completed};`});
-                const stringTask=newList.join();
+                const newList=list.map(x=>{return `${x.number},${x.content},${x.date},${x.completed}`});
+                const stringTask=newList.join(';');
                 listOne.setToLocalStorage(stringTask);
                 break;
             case 6:
-                const saveList=listOne.getDate()
-                console.log(saveList
-                    )
-                const oldList=saveList.split(';')
-                console.log(oldList[0])
+                listOne.getDate();
+                listOne.showName();
+                listOne.showList();
+                break;
+                
             case 0:
                 run=false;
                 break;    
